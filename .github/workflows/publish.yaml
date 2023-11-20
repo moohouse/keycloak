@@ -1,0 +1,157 @@
+name: Keycloak Repack
+on:
+  push:
+    branches:
+      - 'main'
+permissions: write-all
+env:
+  NAME: keycloak
+jobs:
+  build:
+    name: Publish to Github CR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js Version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts'
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Install Dependency
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+          working-directory: theme
+      - name: Vite Build
+        run: npm run build:jar
+        working-directory: theme
+      - name: Login to Container Registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.REPOSITORY_PACKAGE_TOKEN }}
+      - name: Buildah Action
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.NAME }}
+          tags: ${{ github.run_number }}
+          containerfiles: |
+            ./Containerfile
+
+#      - name: Build and Push
+#        uses: docker/build-push-action@v4
+#        id: build
+#        with:
+#          context: .
+#          file: ./Dockerfile
+#          push: true
+#          tags: |
+#            ghcr.io/${{ github.repository_owner }}/${{ env.NAME }}:${{ github.run_number }}
+#      - name: Checkout Charts
+#        uses: actions/checkout@v2
+#        with:
+#          persist-credentials: false
+#          fetch-depth: 0
+#          repository: moohouse/charts
+#      - name: Update and Push Chart
+#        run: |
+#          sed -i "s/version.*/version: 1.0.${{ github.run_number }}/g" charts/${{ env.NAME }}/Chart.yaml
+#          sed -i "s/appVersion.*/appVersion: ${{ github.run_number }}/g" charts/${{ env.NAME }}/Chart.yaml
+#          sed -i "s/tag:.*/tag: ${{ github.run_number }}/g" charts/${{ env.NAME }}/values.yaml
+#          git config --global user.name '${{ github.repository_owner }}'
+#          git config --global user.email '${{ github.repository_owner }}@users.noreply.github.com'
+#          git remote set-url origin https://${{ github.repository_owner }}:${{ secrets.REPOSITORY_TOKEN }}@github.com/${{ github.repository_owner }}/charts
+#          git commit -am "Update to '${{ github.run_number }}'"
+#          git push
+#        shell: bash
+#
+#jobs:
+#  build:
+#    environment: dev
+#    name: Keycloak
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Setup JDK
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '17'
+#          distribution: 'corretto'
+#      - name: Build Keycloak User Storage SPI
+#        uses: Best-Quality-Engineering/ci-maven-action@v1
+#        with:
+#          pom-file: spi/pom.xml
+#          phases: package
+#      - name: Setup pNPM
+#        uses: pnpm/action-setup@v2
+#        with:
+#          version: 8
+#      - name: Get pnpm store directory
+#        shell: bash
+#        run: |
+#          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+#      - uses: actions/cache@v3
+#        name: Setup pNPM cache
+#        with:
+#          path: ${{ env.STORE_PATH }}
+#          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-pnpm-store-
+#      - name: Setup Node.js
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: '18.x'
+#          cache: 'pnpm'
+#          cache-dependency-path: 'theme/pnpm-lock.yaml'
+#      - name: Build Keycloak Theme
+#        working-directory: ./theme
+#        run: |
+#          pnpm install
+#          pnpm build:dev
+#          pnpm build-keycloak-theme
+#        env:
+#          CI: false
+#      - name: Setup Docker
+#        uses: docker/setup-buildx-action@v2
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ap-northeast-2
+#      - name: Login to Amazon ECR
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v1
+#      - name: Build and Push Container Image
+#        uses: docker/build-push-action@v4
+#        id: build
+#        with:
+#          context: .
+#          file: ./Dockerfile
+#          push: true
+#          tags: |
+#            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.run_number }}
+#            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+#  argocd:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Argocd Git Clone
+#        uses: actions/checkout@v3
+#        with:
+#          repository: seegene/wisdom-argocd
+#          ref: main
+#          token: ${{ secrets.ARGO_REPOSITORY_TOKEN }}
+#      - name: Change tag
+#        run : sed -i "s/$ECR_REPOSITORY:[0-9]*/$ECR_REPOSITORY:${{ github.run_number }}/g" keycloak/dev/Deployment.yaml
+#      - name: Argocd Git Push
+#        run: |
+#          git config --global user.email "wwsoh@seegene.com"
+#          git config --global user.name "서원우"
+#          git add keycloak/dev/Deployment.yaml
+#          git commit -m "argocd keycloak $IMAGE_NUMBER"
+#          git push origin main
