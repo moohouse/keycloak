@@ -17,8 +17,6 @@ jobs:
           node-version: '20'
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
       - name: Install Dependency
         uses: bahmutov/npm-install@v1
         with:
@@ -33,14 +31,23 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.REPOSITORY_PACKAGE_TOKEN }}
-      - name: Buildah Action
+      - name: Buildah Build
+        id: container-build
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.NAME }}
           tags: ${{ github.run_number }}
           containerfiles: |
             ./Containerfile
-
+      - name: Buildah Push
+        id: container-push
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          registry: ghcr.io
+          image: ${{ env.NAME }}
+          tags: ${{ github.run_number }}
+      - name: Print image url
+        run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
 #      - name: Build and Push
 #        uses: docker/build-push-action@v4
 #        id: build
