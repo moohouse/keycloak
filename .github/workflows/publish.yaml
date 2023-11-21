@@ -43,7 +43,7 @@ jobs:
         id: container-push
         uses: redhat-actions/push-to-registry@v2
         with:
-          registry: ghcr.io
+          registry: ghcr.io/${{ github.repository_owner }}
           image: ${{ env.NAME }}
           tags: ${{ github.run_number }}
       - name: Print image url
