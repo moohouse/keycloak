@@ -1,4 +1,4 @@
-FROM quay.io/keycloak/keycloak:22.0.5
+FROM quay.io/keycloak/keycloak:23.0.0
 USER keycloak
 ADD keywind/out/keywind.jar /opt/keycloak/themes/
 ENV LANG=ko_KR.UTF-8
