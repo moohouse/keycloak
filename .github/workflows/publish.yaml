@@ -57,6 +57,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
           repository: moohouse/manifest
+          ref: main
       - name: Argo-CD Push
         run: |
           sed -i "s/${{ env.CONTAINER }}:[0-9]*/${{ env.CONTAINER }}:${{ github.run_number }}/g" ${{ env.MANIFEST }}
