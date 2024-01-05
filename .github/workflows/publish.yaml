@@ -69,6 +69,6 @@ jobs:
       - name: Argo-CD Push
         run: |
           sed -i "s^${{ env.CONTAINER }}:[0-9]*^${{ env.CONTAINER }}:${{ github.run_number }}^g" ${{ env.MANIFEST }}
-          git commit -m "Tag. ${{ github.run_number  }}"
+          git commit -am "Tag. ${{ github.run_number  }}"
           git push origin main
         shell: bash
