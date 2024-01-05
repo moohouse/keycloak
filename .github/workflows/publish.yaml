@@ -19,14 +19,6 @@ jobs:
           node-version: '20'
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-      - name: List keys
-        run: gpg -K
       - name: Login to Container Registry
         uses: redhat-actions/podman-login@v1
         with:
@@ -57,6 +49,14 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
           repository: moohouse/manifest
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+      - name: List keys
+        run: gpg -K
       - name: Argo-CD Push
         run: |
           sed -i "s/${{ env.CONTAINER }}:[0-9]*/${{ env.CONTAINER }}:${{ github.run_number }}/g" ${{ env.MANIFEST }}
