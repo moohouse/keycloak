@@ -23,24 +23,6 @@ jobs:
         run: gpg -K
       - name: Checkout
         uses: actions/checkout@v3
-#      - name: Install Dependency
-#        uses: bahmutov/npm-install@v1
-#        with:
-#          useRollingCache: true
-#          working-directory: dsfr
-#      - name: Run install
-#        uses: borales/actions-yarn@v4
-#        with:
-#          dir: dsfr
-#          cmd: install # will run `yarn install` command
-#      - name: Run install
-#        uses: borales/actions-yarn@v4
-#        with:
-#          dir: dsfr
-#          cmd: build-keycloak-theme # will run
-##      - name: Vite Build
-##        run: npm run build
-##        working-directory: keywind
       - name: Login to Container Registry
         uses: redhat-actions/podman-login@v1
         with:
