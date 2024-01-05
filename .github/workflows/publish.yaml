@@ -29,6 +29,8 @@ jobs:
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          trust_level: 5
+          git_config_global: true
           git_user_signingkey: true
           git_commit_gpgsign: true
       - name: List keys
@@ -59,13 +61,6 @@ jobs:
           repository: moohouse/manifest
           ref: main
           token: ${{ secrets.PAT_REPOSITORY }}
-      - name: Import GPG key
-        id: import-gpg
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
       - name: Argo-CD Push
         run: |
           sed -i "s^${{ env.CONTAINER }}:[0-9]*^${{ env.CONTAINER }}:${{ github.run_number }}^g" ${{ env.MANIFEST }}
