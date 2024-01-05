@@ -69,7 +69,6 @@ jobs:
       - name: Argo-CD Push
         run: |
           sed -i "s^${{ env.CONTAINER }}:[0-9]*^${{ env.CONTAINER }}:${{ github.run_number }}^g" ${{ env.MANIFEST }}
-          git config --global user.email "${{ steps.import-gpg.outputs.email }}"
-          git config --global user.name "${{ steps.import-gpg.outputs.name }}"
+          git commit -m "Ver. ${{ github.run_number  }}"
           git push origin main
         shell: bash
