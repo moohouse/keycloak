@@ -61,7 +61,7 @@ jobs:
           token: ${{ secrets.PAT_REPOSITORY }}
       - name: Argo-CD Push
         run: |
-          sed -i "s/${{ env.CONTAINER }}:[0-9]*/${{ env.CONTAINER }}:${{ github.run_number }}/g" ${{ env.MANIFEST }}
+          sed -i "s^${{ env.CONTAINER }}:[0-9]*^${{ env.CONTAINER }}:${{ github.run_number }}^g" ${{ env.MANIFEST }}
           git config --global user.email "${{ steps.import-gpg.outputs.email }}"
           git config --global user.name "${{ steps.import-gpg.outputs.name }}"
           git push origin main
