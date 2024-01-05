@@ -6,6 +6,8 @@ on:
 permissions: write-all
 env:
   NAME: keycloak
+  CONTAINER: ghcr.io/moohouse/keycloak
+  MANIFEST: keycloak/Rollout.yaml
 jobs:
   build:
     name: Publish to Github CR
@@ -19,6 +21,8 @@ jobs:
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
       - name: List keys
         run: gpg -K
       - name: Checkout
@@ -47,3 +51,16 @@ jobs:
           extra-args: --sign-by moo@moo.is
       - name: Print image url
         run: echo "Image pushed to ${{ steps.container-push.outputs.registry-paths }}"
+      - name: Checkout Manifest
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          repository: moohouse/manifest
+      - name: Argo-CD Push
+        run: |
+          sed -i "s/${{ env.CONTAINER }}:[0-9]*/${{ env.CONTAINER }}:${{ github.run_number }}/g" ${{ env.MANIFEST }}
+          git config --global user.email "${{ steps.import-gpg.outputs.email }}"
+          git config --global user.name "${{ steps.import-gpg.outputs.name }}"
+          git push origin main
+        shell: bash
