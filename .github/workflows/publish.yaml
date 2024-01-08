@@ -59,6 +59,7 @@ jobs:
           fetch-depth: 01
           repository: moohouse/manifest
           ref: main
+          token: ${{ secrets.PAT_REPOSITORY }}
       - name: List keys
         run: gpg -K
       - name: Argo-CD Push
