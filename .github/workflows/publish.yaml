@@ -49,7 +49,7 @@ jobs:
           registry: ghcr.io/${{ github.repository_owner }}
           image: ${{ env.NAME }}
           tags: ${{ github.run_number }}
-          extra-args: --sign-by moo@moo.is
+          extra-args: --sign-by moo@moo.so
       - name: Print image url
         run: echo "Image pushed to ${{ steps.container-push.outputs.registry-paths }}"
       - name: Checkout Manifest
