@@ -32,4 +32,9 @@
       <script defer src="${url.resourcesPath}/${script}" type="module"></script>
     </#list>
   </#if>
+
+  <#if realm.displayName == 'Keycloak'>
+    <link href="http://localhost:5173/src/index.css" rel="stylesheet">
+    <script defer src="http://localhost:5173/src/index.ts" type="module"></script>
+  </#if>
 </#macro>

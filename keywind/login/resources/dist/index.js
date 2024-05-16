@@ -1,1 +1,1 @@
-import{m}from"./assets/module.esm-2CM2lSW2.js";window.Alpine=m;m.start();
+import{m as r}from"./assets/module.esm-830b7ebb.js";function a(o){const e=document.querySelector(":root");o=="dark"?e.classList.add("dark"):e.classList.remove("dark")}function d(){return window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function t(){a(d())}if(window.matchMedia){var i=window.matchMedia("(prefers-color-scheme: dark)");i.addEventListener("change",t)}t();window.Alpine=r;r.start();
