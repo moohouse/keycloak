@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js Version
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - name: Checkout
         uses: actions/checkout@v4
       - name: Login to Container Registry
@@ -34,7 +34,7 @@ jobs:
           git_config_global: true
           git_user_signingkey: true
           git_commit_gpgsign: true
-      - name: Buildah Build
+      - name: Build Container Image
         id: container-build
         uses: redhat-actions/buildah-build@v2
         with:
@@ -42,7 +42,7 @@ jobs:
           tags: ${{ github.run_number }}
           containerfiles: |
             ./Containerfile
-      - name: Buildah Push
+      - name: Push to Container Registry
         id: container-push
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -57,17 +57,15 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 01
-          repository: moohouse/manifest
+          repository: moohouse/delivery
           ref: main
           token: ${{ secrets.PAT_REPOSITORY }}
-      - name: List keys
-        run: gpg -K
       - name: Argo-CD Push
         run: |
           echo '${{ steps.import-gpg.outputs.email }}'
           echo '${{ steps.import-gpg.outputs.name }}'
           sed -i "s^${{ env.CONTAINER }}:[0-9]*^${{ env.CONTAINER }}:${{ github.run_number }}^g" ${{ env.MANIFEST }}
           git commit -am "Tag. ${{ github.run_number  }}"
-          git remote set-url origin https://${{ github.repository_owner }}:${{ secrets.PAT_REPOSITORY }}@github.com/${{ github.repository_owner }}/manifest
+          git remote set-url origin https://${{ github.repository_owner }}:${{ secrets.PAT_REPOSITORY }}@github.com/${{ github.repository_owner }}/delivery
           git push origin main
         shell: bash
