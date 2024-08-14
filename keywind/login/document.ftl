@@ -17,11 +17,15 @@
     </#list>
   </#if>
 
+  <link rel="shortcut icon" href="${url.resourcesPath?keep_before("/resources")}/realms/${realm.name}/assets/img/favicon" />
+
   <#if properties.styles?has_content>
     <#list properties.styles?split(" ") as style>
       <link href="${url.resourcesPath}/${style}" rel="stylesheet">
     </#list>
   </#if>
+
+  <link href="${url.resourcesPath?keep_before("/resources")}/realms/${realm.name}/assets/css/login.css" rel="stylesheet" />
 
   <#if script?has_content>
     <script defer src="${url.resourcesPath}/${script}" type="module"></script>
@@ -31,10 +35,5 @@
     <#list properties.scripts?split(" ") as script>
       <script defer src="${url.resourcesPath}/${script}" type="module"></script>
     </#list>
-  </#if>
-
-  <#if realm.displayName == 'Keycloak'>
-    <link href="http://localhost:5173/src/index.css" rel="stylesheet">
-    <script defer src="http://localhost:5173/src/index.ts" type="module"></script>
   </#if>
 </#macro>

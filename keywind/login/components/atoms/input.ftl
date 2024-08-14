@@ -4,7 +4,7 @@
 <#macro
   kw
   autofocus=false
-  class="dark:bg-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:border-zinc-700 block border-secondary-200 mt-1 rounded-md w-full focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 sm:text-sm"
+  class="block border-secondary-200 mt-1 rounded-md w-full focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 sm:text-sm"
   disabled=false
   invalid=false
   label=""
@@ -33,14 +33,16 @@
           :type="show ? 'text' : 'password'"
 
           <#list rest as attrName, attrValue>
-            ${attrName}="${attrValue}"
+            <#if attrValue!="">
+              ${attrName}="${attrValue}"
+            </#if>
           </#list>
         >
         <button
           @click="show = !show"
           aria-controls="${name}"
           :aria-expanded="show"
-          class="absolute text-secondary-400 right-3 top-3 sm:top-2"
+          class="absolute text-secondary-400 right-3 top-3"
           type="button"
         >
           <div x-show="!show">
@@ -65,7 +67,9 @@
         type="${type}"
 
         <#list rest as attrName, attrValue>
-          ${attrName}="${attrValue}"
+          <#if attrValue!="">
+            ${attrName}="${attrValue}"
+          </#if>
         </#list>
       >
     </#if>

@@ -1,5 +1,6 @@
 <#import "document.ftl" as document>
 <#import "components/atoms/alert.ftl" as alert>
+<#import "components/atoms/background.ftl" as background>
 <#import "components/atoms/body.ftl" as body>
 <#import "components/atoms/button.ftl" as button>
 <#import "components/atoms/card.ftl" as card>
@@ -65,11 +66,12 @@
     </#if>
   </#assign>
 
-  <html<#if realm.internationalizationEnabled> lang="${locale.currentLanguageTag}"</#if> class="dark">
+  <html<#if realm.internationalizationEnabled> lang="${locale.currentLanguageTag}"</#if>>
     <head>
       <@document.kw script=script />
     </head>
     <@body.kw>
+      <@background.kw />
       <@container.kw>
         <@card.kw content=cardContent footer=cardFooter header=cardHeader />
         <@nav.kw>
