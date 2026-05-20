@@ -1,0 +1,1 @@
+import{c as o,j as t,r as e,K as r}from"./kc.gen-KMPrtRVa.js";import"./index-D9lXLfpD.js";if(!window.kcContext)throw new Error("No Keycloak context");o.createRoot(document.getElementById("root")).render(t.jsx(e.StrictMode,{children:t.jsx(r,{kcContext:window.kcContext})}));

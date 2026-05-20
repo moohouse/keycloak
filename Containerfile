@@ -1,6 +1,5 @@
-FROM quay.io/keycloak/keycloak:26.2.2
+FROM quay.io/keycloak/keycloak:26.6.2
 USER keycloak
-ADD keywind /opt/keycloak/themes/keywind
+ADD themes/carbon /opt/keycloak/themes/carbon
 ENV LANG=ko_KR.UTF-8
 ENV TZ=Asia/Seoul
-
