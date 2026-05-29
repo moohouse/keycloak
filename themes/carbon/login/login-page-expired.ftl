@@ -513,7 +513,7 @@ function decodeHtmlEntities(htmlStr){
             <#return 'function(){ return "' + returnValue + '"; }'>
         </#if>
 
-        <#assign fieldNames = [{{fieldNames}}]>
+        <#assign fieldNames = ["username", "password", "password-confirm", "email", "firstName", "lastName", "totp", "userLabel", "recoveryCodeInput"]>
         <#if profile?? && profile.attributes??>
             <#list profile.attributes as attribute>
                 <#if fieldNames?seq_contains(attribute.name)>
