@@ -838,7 +838,7 @@ function decodeHtmlEntities(htmlStr){
 </#macro>
 
     </script>
-    <script type="module" crossorigin src="${url.resourcesPath}/dist/assets/index-D9lXLfpD.js"></script>
+    <script type="module" crossorigin src="${url.resourcesPath}/dist/assets/index-D296-Vhe.js"></script>
   </head>
   <body>
     <div id="root"></div>
